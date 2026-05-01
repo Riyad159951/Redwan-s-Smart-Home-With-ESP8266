@@ -8,131 +8,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
-
-body{
-background:linear-gradient(135deg,#000428,#004e92);
-color:#fff;
-}
-
-header{
-display:flex;justify-content:space-between;align-items:center;
-padding:20px 40px;
-background:rgba(255,255,255,0.1);
-backdrop-filter:blur(10px);
-}
-
-.logo{
-font-size:26px;font-weight:700;
-color:#ffdd00;
-}
-
-main{
-padding:30px;
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-gap:25px;
-}
-
-.card {
-  background: rgba(255, 255, 255, 0.12);
-  padding: 40px 30px;   /* আগে 25 ছিল, এখন বড় */
-  text-align: center;
-  border-radius: 22px;
-  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.35);
-  backdrop-filter: blur(16px);
-  transition: 0.35s;
-  min-height: 200px;   /* সব box বড় হবে */
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  
-}
-
-.card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.5);
-}
-
-.card:hover{transform:translateY(-5px);}
-
-.stat-value{font-size:35px;font-weight:bold;margin-top:10px;}
-
-button {
-  border: none;
-  padding: 14px 26px;
-  margin: 10px;
-  border-radius: 14px;
-  font-size: 15px;
-  font-weight: 700;
-  color: #fff;
-  cursor: pointer;
-  transition: 0.25s;
-}
-
-.on{background:#28a745;}
-.off{background:#ff3333;}
-
-.chart-box{
-grid-column:1/-1;
-background:rgba(255,255,255,0.15);
-padding:20px;border-radius:15px;
-}
-
-/* ABOUT */
-.about{
-margin-top:50px;
-padding:40px;
-background:rgba(0,0,0,0.4);
-display:grid;
-grid-template-columns:1fr 2fr;
-gap:30px;
-}
-
-.about img{
-width:150px;border-radius:50%;
-}
-
-.badge{
-display:inline-block;
-padding:6px 12px;
-background:#007bff;
-margin:5px;border-radius:8px;
-}
-
-/* notification */
-#notify{
-position:fixed;
-top:20px;
-right:20px;
-background:#28a745;
-padding:10px 20px;
-border-radius:8px;
-display:none;
-}
-
-footer {
-    text-align: center;
-    padding: 15px;
-  }
-
-  footer a {
-    color: blue;
-    text-decoration: none;
-    margin: 0 5px;
-  }
-
-  footer a:hover {
-    text-decoration: underline;
-  }
-</style>
+<!-- external css -->
+<link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
 <header>
 <div class="logo">Redwan's Smart IoT</div>
+<button class="toggle-btn" onclick="toggleMode()">🌙 Light</button>
 </header>
 
 <div id="notify"></div>
@@ -169,18 +53,17 @@ footer {
 
 </main>
 
-<!-- ABOUT SECTION -->
 <section class="about">
 
-<div>
+<div class="profile">
 <img src="parfect-png.jpg">
-<h2>REDWAN HOSSEN</h2>
-<p>IoT Developer | Web Developer</p>
+<h2>Redwan Hossen</h2>
+<p>IoT & Web Developer</p>
 </div>
 
-<div>
+<div class="about-content">
 <h2>About Me</h2>
-<p>I build smart IoT systems using ESP8266 and modern web technologies. This system allows remote device control and live monitoring.</p>
+<p>I build smart IoT systems using ESP8266 and modern web technologies.</p>
 
 <h3>Skills</h3>
 <div class="badge">HTML</div>
@@ -194,98 +77,23 @@ footer {
 <li>Remote Device Control</li>
 <li>Live Sensor Monitoring</li>
 <li>Real-time Graph</li>
-<li>Works from Anywhere</li>
+<li>Access from Anywhere</li>
 </ul>
 </div>
 
 </section>
 
-<footer>
-  Developed by Redwan Hossen |
-
-  <a href="https://www.facebook.com/profile.php?id=61552517499329" target="_blank" style="color: blue; text-decoration: none;">
-    Facebook
-  </a>
-
-  |
-
-  <a href="https://www.linkedin.com/in/redwan-hossen-40b8a2298/" target="_blank" style="color: blue; text-decoration: none;">
-    LinkedIn
-  </a>
+<footer class="footer">
+<p>© 2026 Redwan Hossen. All rights reserved.</p>
+<div class="social">
+<a href="https://www.facebook.com/profile.php?id=61552517499329" target="_blank">Facebook</a>
+<span>|</span>
+<a href="https://www.linkedin.com/in/redwan-hossen-40b8a2298/" target="_blank">LinkedIn</a>
+</div>
 </footer>
 
-<script>
-
-const AIO_KEY="YOUR_API_KEY"; // এখানে আপনার Adafruit IO API Key দিন
-
-function notify(msg){
-const n=document.getElementById("notify");
-n.innerText=msg;
-n.style.display="block";
-setTimeout(()=>n.style.display="none",2000);
-}
-
-async function fetchData(){
-const t=await fetch("https://io.adafruit.com/api/v2/redwan14/feeds/temperature/data/last",{headers:{"X-AIO-Key":AIO_KEY}});
-const h=await fetch("https://io.adafruit.com/api/v2/redwan14/feeds/humidity/data/last",{headers:{"X-AIO-Key":AIO_KEY}});
-
-const temp=await t.json();
-const hum=await h.json();
-
-document.getElementById("tempVal").innerText=temp.value+" °C";
-document.getElementById("humVal").innerText=hum.value+" %";
-
-addChart(temp.value,hum.value);
-}
-
-async function led1(v){
-await fetch("https://io.adafruit.com/api/v2/redwan14/feeds/led1control/data",{
-method:"POST",
-headers:{"Content-Type":"application/json","X-AIO-Key":AIO_KEY},
-body:JSON.stringify({value:v})
-});
-document.getElementById("led1Val").innerText=v.toUpperCase();
-notify("LED1 "+v);
-}
-
-async function led2(v){
-await fetch("https://io.adafruit.com/api/v2/redwan14/feeds/led2control/data",{
-method:"POST",
-headers:{"Content-Type":"application/json","X-AIO-Key":AIO_KEY},
-body:JSON.stringify({value:v})
-});
-document.getElementById("led2Val").innerText=v.toUpperCase();
-notify("LED2 "+v);
-}
-
-/* chart */
-const ctx=document.getElementById("chart");
-const chart=new Chart(ctx,{
-type:"line",
-data:{labels:[],datasets:[
-{label:"Temp",data:[],borderColor:"red"},
-{label:"Hum",data:[],borderColor:"blue"}
-]},
-});
-
-function addChart(t,h){
-chart.data.labels.push(new Date().toLocaleTimeString());
-chart.data.datasets[0].data.push(t);
-chart.data.datasets[1].data.push(h);
-
-if(chart.data.labels.length>15){
-chart.data.labels.shift();
-chart.data.datasets[0].data.shift();
-chart.data.datasets[1].data.shift();
-}
-
-chart.update();
-}
-
-setInterval(fetchData,5000);
-fetchData();
-
-</script>
+<!-- external js -->
+<script src="script.js"></script>
 
 </body>
 </html>
